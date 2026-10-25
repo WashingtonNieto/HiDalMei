@@ -1,6 +1,7 @@
 <?php
 /**
  * app/Controllers/CatalogController.php
+ * Controlador del Catálogo Público y Ficha de Producto
  */
 
 declare(strict_types=1);

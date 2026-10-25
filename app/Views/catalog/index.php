@@ -1,3 +1,9 @@
+<?php
+/**
+ * app/Views/catalog/index.php
+ */
+?>
+
 <div class="row mb-4 align-items-center">
     <div class="col-md-6">
         <h2 class="fw-bold text-dark mb-0">Catálogo Oriental</h2>
@@ -19,9 +25,9 @@
     <?php else: foreach ($products as $p): ?>
         <?php 
             $nombreVal = $p['nombre'] ?? $p['name'] ?? 'Producto';
-            $imgVal = !empty($p['imagen']) ? $p['imagen'] : (!empty($p['image_url']) ? $p['image_url'] : 'default_product.png');
+            $imgVal    = !empty($p['imagen']) ? $p['imagen'] : (!empty($p['image_url']) ? $p['image_url'] : 'default_product.png');
             $precioVal = (float)($p['precio'] ?? $p['price'] ?? 0);
-            $catVal = $p['category_name'] ?? 'General';
+            $catVal    = $p['category_name'] ?? 'General';
             $origenVal = $p['pais_origen'] ?? $p['origin_country'] ?? 'KR';
         ?>
         <div class="col-sm-6 col-md-4 col-lg-4">
@@ -47,3 +53,15 @@
         </div>
     <?php endforeach; endif; ?>
 </div>
+
+<?php if ($totalPages > 1): ?>
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
+                <a class="page-link" href="<?= APP_URL ?>/catalog?page=<?= $i ?>&search=<?= urlencode($search) ?>&category_id=<?= $categoryId ?>"><?= $i ?></a>
+            </li>
+        <?php endfor; ?>
+    </ul>
+</nav>
+<?php endif; ?>
