@@ -9,7 +9,7 @@
     <div class="container text-center">
         <h1 class="display-1 text-dark fw-bold">500</h1>
         <h2>Error Interno del Servidor</h2>
-        <p class="text-muted">Ocurrió un problema inesperado. Por favor, intenta de nuevo más tarde.</p>
+        <p class="text-muted">Ocurrió un error inesperado al procesar la solicitud.</p>
         <a href="<?= APP_URL ?>/" class="btn btn-secondary mt-3">Volver al Inicio</a>
     </div>
 </body>

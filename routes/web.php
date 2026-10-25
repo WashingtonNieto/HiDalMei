@@ -1,36 +1,42 @@
 <?php
 /**
  * routes/web.php
- * Registro centralizado de rutas del sistema
  */
 
 use App\Controllers\HomeController;
 use App\Controllers\AuthController;
-use App\Middleware\RoleMiddleware;
+use App\Controllers\CatalogController;
+use App\Controllers\AdminController;
+use App\Controllers\AdminCategoryController;
+use App\Controllers\AdminProductController;
 
-/** @var App\Core\Router $router */
+/** @var \App\Core\Router $router */
 
-// Rutas Públicas
+// Rutas Públicas y Catálogo
 $router->get('/', [HomeController::class, 'index']);
+$router->get('/catalog', [CatalogController::class, 'index']);
+$router->get('/catalog/detail/{id}', [CatalogController::class, 'detail']);
 
-// Rutas de Autenticación
+// Autenticación
 $router->get('/register', [AuthController::class, 'showRegister']);
 $router->post('/register', [AuthController::class, 'register']);
-
 $router->get('/login', [AuthController::class, 'showLogin']);
 $router->post('/login', [AuthController::class, 'login']);
-
 $router->post('/logout', [AuthController::class, 'logout']);
 
-// Ejemplo de Ruta Protegida solo para Administrador
-$router->get('/admin/dashboard', function($request, $response) {
-    if (RoleMiddleware::handle('ADMIN')) {
-        echo "<h1>Panel de Control de Administración - HiDalMei</h1>";
-        echo "<p>Acceso concedido únicamente al rol ADMIN.</p>";
-        echo "<a href='" . APP_URL . "/'>Volver a la tienda</a>";
-    }
-});
+// Panel Administrativo
+$router->get('/admin/dashboard', [AdminController::class, 'dashboard']);
 
+// CRUD Categorías (Admin)
+$router->get('/admin/categories', [AdminCategoryController::class, 'index']);
+$router->post('/admin/categories/create', [AdminCategoryController::class, 'store']);
+$router->post('/admin/categories/update/{id}', [AdminCategoryController::class, 'update']);
+$router->post('/admin/categories/delete/{id}', [AdminCategoryController::class, 'delete']);
 
-
-
+// CRUD Productos (Admin)
+$router->get('/admin/products', [AdminProductController::class, 'index']);
+$router->get('/admin/products/create', [AdminProductController::class, 'create']);
+$router->post('/admin/products/create', [AdminProductController::class, 'store']);
+$router->get('/admin/products/edit/{id}', [AdminProductController::class, 'edit']);
+$router->post('/admin/products/edit/{id}', [AdminProductController::class, 'update']);
+$router->post('/admin/products/delete/{id}', [AdminProductController::class, 'delete']);

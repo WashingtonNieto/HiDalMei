@@ -1,7 +1,7 @@
 <?php
 /**
  * app/Core/Response.php
- * Manejo de la respuesta HTTP
+ * Manejo de respuestas y redirecciones
  */
 
 declare(strict_types=1);

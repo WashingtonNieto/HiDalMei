@@ -1,7 +1,7 @@
 <?php
 /**
  * app/Core/Database.php
- * Gestor de conexión PDO bajo el patrón Singleton
+ * Conexión PDO Singleton
  */
 
 declare(strict_types=1);
@@ -36,10 +36,10 @@ class Database
                 self::$instance = new PDO($dsn, $config['username'], $config['password'], $config['options']);
             } catch (PDOException $e) {
                 if (APP_ENV === 'development') {
-                    throw new Exception("Error de conexión a la Base de Datos: " . $e->getMessage(), (int)$e->getCode());
+                    throw new Exception("Error de conexión a MySQL: " . $e->getMessage());
                 } else {
                     error_log("DB Connection Error: " . $e->getMessage());
-                    throw new Exception("Error interno del servidor al conectar con la base de datos.");
+                    throw new Exception("Error al conectar con la base de datos.");
                 }
             }
         }

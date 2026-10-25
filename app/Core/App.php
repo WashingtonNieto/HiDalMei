@@ -1,7 +1,7 @@
 <?php
 /**
  * app/Core/App.php
- * Motor de arranque de la arquitectura MVC
+ * Motor de arranque de la aplicación
  */
 
 declare(strict_types=1);

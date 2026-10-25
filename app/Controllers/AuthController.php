@@ -1,7 +1,6 @@
 <?php
 /**
  * app/Controllers/AuthController.php
- * Controlador para registro, login y logout
  */
 
 declare(strict_types=1);
@@ -22,9 +21,6 @@ class AuthController extends BaseController
         $this->userModel = new User();
     }
 
-    /**
-     * Muestra el formulario de registro.
-     */
     public function showRegister(Request $request, Response $response): string
     {
         if (isset($_SESSION['user_id'])) {
@@ -36,9 +32,6 @@ class AuthController extends BaseController
         ]);
     }
 
-    /**
-     * Procesa el registro de un nuevo cliente.
-     */
     public function register(Request $request, Response $response): void
     {
         $body = $request->getBody();
@@ -49,59 +42,69 @@ class AuthController extends BaseController
         }
 
         $errors = [];
-        $firstName = trim($body['first_name'] ?? '');
-        $lastName  = trim($body['last_name'] ?? '');
-        $email     = trim($body['email'] ?? '');
+        $nombre    = trim($body['nombre'] ?? '');
+        $apellido  = trim($body['apellido'] ?? '');
+        $correo    = trim($body['correo'] ?? '');
         $password  = $body['password'] ?? '';
         $confirm   = $body['password_confirm'] ?? '';
-        $phone     = trim($body['phone'] ?? '');
+        $telefono  = trim($body['telefono'] ?? '');
+        $direccion = trim($body['direccion'] ?? '');
+        $ciudad    = trim($body['ciudad'] ?? '');
 
-        // Validaciones del servidor
-        if (empty($firstName) || strlen($firstName) < 2) {
-            $errors[] = 'El nombre es obligatorio y debe tener al menos 2 caracteres.';
+        if (empty($nombre) || strlen($nombre) < 2) {
+            $errors[] = 'El nombre es obligatorio (mínimo 2 caracteres).';
         }
-        if (empty($lastName) || strlen($lastName) < 2) {
-            $errors[] = 'El apellido es obligatorio y debe tener al menos 2 caracteres.';
+        if (empty($apellido) || strlen($apellido) < 2) {
+            $errors[] = 'El apellido es obligatorio (mínimo 2 caracteres).';
         }
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'Debe ingresar un correo electrónico válido.';
-        } elseif ($this->userModel->findByEmail($email)) {
+        } elseif ($this->userModel->findByEmail($correo)) {
             $errors[] = 'El correo electrónico ya se encuentra registrado.';
         }
-        if (strlen($password) < 8) {
-            $errors[] = 'La contraseña debe tener al menos 8 caracteres.';
+
+        // Política de Contraseña con Expresión Regular Requerida
+        $pattern = '/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/';
+        if (!preg_match($pattern, $password)) {
+            $errors[] = 'La contraseña debe tener al menos 8 caracteres, incluir al menos una letra mayúscula, una minúscula y un número.';
         }
+
         if ($password !== $confirm) {
             $errors[] = 'Las contraseñas no coinciden.';
         }
 
         if (!empty($errors)) {
             $_SESSION['flash_errors'] = $errors;
-            $_SESSION['old_input'] = ['first_name' => $firstName, 'last_name' => $lastName, 'email' => $email, 'phone' => $phone];
+            $_SESSION['old_input'] = [
+                'nombre'    => $nombre,
+                'apellido'  => $apellido,
+                'correo'    => $correo,
+                'telefono'  => $telefono,
+                'direccion' => $direccion,
+                'ciudad'    => $ciudad
+            ];
             $response->redirect('/register');
         }
 
-        // Registrar cliente
         $success = $this->userModel->registerCustomer([
-            'first_name' => $firstName,
-            'last_name'  => $lastName,
-            'email'      => $email,
-            'password'   => $password,
-            'phone'      => $phone
+            'nombre'    => $nombre,
+            'apellido'  => $apellido,
+            'correo'    => $correo,
+            'password'  => $password,
+            'telefono'  => $telefono,
+            'direccion' => $direccion,
+            'ciudad'    => $ciudad
         ]);
 
         if ($success) {
-            $_SESSION['flash_success'] = '¡Registro completado con éxito! Ya puedes iniciar sesión.';
+            $_SESSION['flash_success'] = '¡Registro completado exitosamente! Ahora puede iniciar sesión.';
             $response->redirect('/login');
         } else {
-            $_SESSION['flash_error'] = 'Ocurrió un error al procesar el registro.';
+            $_SESSION['flash_error'] = 'Error al registrar el usuario en la base de datos.';
             $response->redirect('/register');
         }
     }
 
-    /**
-     * Muestra el formulario de inicio de sesión.
-     */
     public function showLogin(Request $request, Response $response): string
     {
         if (isset($_SESSION['user_id'])) {
@@ -113,9 +116,6 @@ class AuthController extends BaseController
         ]);
     }
 
-    /**
-     * Procesa la autenticación del usuario.
-     */
     public function login(Request $request, Response $response): void
     {
         $body = $request->getBody();
@@ -125,47 +125,43 @@ class AuthController extends BaseController
             $response->redirect('/login');
         }
 
-        $email    = trim($body['email'] ?? '');
+        $correo   = trim($body['correo'] ?? '');
         $password = $body['password'] ?? '';
 
-        if (empty($email) || empty($password)) {
-            $_SESSION['flash_error'] = 'Por favor, ingrese su correo y contraseña.';
+        if (empty($correo) || empty($password)) {
+            $_SESSION['flash_error'] = 'Por favor, complete todos los campos.';
             $response->redirect('/login');
         }
 
-        $user = $this->userModel->findByEmail($email);
+        $user = $this->userModel->findByEmail($correo);
 
-        if (!$user || !password_verify($password, $user['password_hash'])) {
-            $_SESSION['flash_error'] = 'Credenciales incorrectas.';
-            $_SESSION['old_input'] = ['email' => $email];
+        if (!$user || !password_verify($password, $user['password'])) {
+            $_SESSION['flash_error'] = 'Credenciales de acceso incorrectas.';
+            $_SESSION['old_input'] = ['correo' => $correo];
             $response->redirect('/login');
         }
 
-        if ((int)$user['is_active'] !== 1) {
-            $_SESSION['flash_error'] = 'Su cuenta se encuentra inactiva. Contacte con soporte.';
+        if ((int)$user['activo'] !== 1) {
+            $_SESSION['flash_error'] = 'La cuenta se encuentra inactiva.';
             $response->redirect('/login');
         }
 
-        // Regeneración del ID de sesión para prevenir Session Fixation
         session_regenerate_id(true);
 
-        $_SESSION['user_id']        = $user['id'];
-        $_SESSION['user_name']      = $user['first_name'] . ' ' . $user['last_name'];
-        $_SESSION['user_email']     = $user['email'];
-        $_SESSION['user_role']      = $user['role_name'];
-        $_SESSION['flash_success']  = '¡Bienvenido de nuevo, ' . htmlspecialchars($user['first_name']) . '!';
+        // Guardar información en sesión para el Menú Superior
+        $_SESSION['user_id']       = $user['id'];
+        $_SESSION['user_name']     = $user['nombre'] . ' ' . $user['apellido'];
+        $_SESSION['user_email']    = $user['email'];
+        $_SESSION['user_role']     = strtoupper($user['role_name'] ?? 'CUSTOMER');
+        $_SESSION['flash_success'] = '¡Bienvenido de nuevo, ' . htmlspecialchars($user['nombre']) . '!';
 
-        // Redireccionar según el rol
-        if ($user['role_name'] === 'ADMIN') {
+        if ($_SESSION['user_role'] === 'ADMIN' || $_SESSION['user_role'] === 'ADMINISTRADOR') {
             $response->redirect('/admin/dashboard');
         } else {
             $response->redirect('/');
         }
     }
 
-    /**
-     * Cierra la sesión activa.
-     */
     public function logout(Request $request, Response $response): void
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -188,7 +184,6 @@ class AuthController extends BaseController
         }
 
         session_destroy();
-
         session_start();
         $_SESSION['flash_success'] = 'Ha cerrado sesión correctamente.';
         $response->redirect('/login');

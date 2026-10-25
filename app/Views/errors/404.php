@@ -9,7 +9,7 @@
     <div class="container text-center">
         <h1 class="display-1 text-danger fw-bold">404</h1>
         <h2>Página no encontrada</h2>
-        <p class="text-muted">El recurso que estás buscando no existe o fue movido.</p>
+        <p class="text-muted">El recurso solicitado no existe o ha sido movido.</p>
         <a href="<?= APP_URL ?>/" class="btn btn-primary mt-3">Volver al Inicio</a>
     </div>
 </body>

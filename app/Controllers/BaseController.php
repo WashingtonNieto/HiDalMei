@@ -1,7 +1,6 @@
 <?php
 /**
  * app/Controllers/BaseController.php
- * Controlador base con soporte para sistema de vistas
  */
 
 declare(strict_types=1);

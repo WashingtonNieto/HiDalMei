@@ -1,7 +1,6 @@
 <?php
 /**
  * app/Models/BaseModel.php
- * Modelo base con abstracción de consultas PDO
  */
 
 declare(strict_types=1);

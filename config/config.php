@@ -1,19 +1,18 @@
 <?php
 /**
  * config/config.php
- * Configuración global del sistema HiDalMei
+ * Configuración general del proyecto HiDalMei
  */
 
 declare(strict_types=1);
 
-// Definición de rutas del sistema de archivos
 define('ROOT_PATH', dirname(__DIR__));
 define('APP_PATH', ROOT_PATH . '/app');
 define('CONFIG_PATH', ROOT_PATH . '/config');
 define('STORAGE_PATH', ROOT_PATH . '/storage');
 define('PUBLIC_PATH', ROOT_PATH . '/public');
 
-// Carga básica de archivo .env si existe
+// Carga simple de variables de entorno desde .env
 $envFile = ROOT_PATH . '/.env';
 if (file_exists($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -24,13 +23,10 @@ if (file_exists($envFile)) {
     }
 }
 
-// Constantes globales de la aplicación
 define('APP_NAME', $_ENV['APP_NAME'] ?? 'HiDalMei');
 define('APP_ENV', $_ENV['APP_ENV'] ?? 'development');
 define('APP_URL', rtrim($_ENV['APP_URL'] ?? 'http://localhost/hidalmei', '/'));
-define('APP_SECRET', $_ENV['APP_SECRET'] ?? 'DefaultSecretHashKeyDoNotUseInProduction');
 
-// Configuración de visualización de errores según el entorno
 if (APP_ENV === 'development') {
     error_reporting(E_ALL);
     ini_set('display_errors', '1');

@@ -1,7 +1,6 @@
 <?php
 /**
  * app/Controllers/HomeController.php
- * Controlador inicial de la tienda
  */
 
 declare(strict_types=1);
@@ -16,7 +15,7 @@ class HomeController extends BaseController
     public function index(Request $request, Response $response): string
     {
         return $this->render('home/index', [
-            'pageTitle' => 'HiDalMei - Tu Conexión con Asia',
+            'pageTitle' => 'HiDalMei - Comercio Electrónico Oriental',
             'appName'   => APP_NAME
         ]);
     }

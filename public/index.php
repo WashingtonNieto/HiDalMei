@@ -6,10 +6,9 @@
 
 declare(strict_types=1);
 
-// Carga del archivo de configuración global
 require_once dirname(__DIR__) . '/config/config.php';
 
-// Autoload básico de clases cumpliendo el estándar PSR-4 sin Composer
+// Autoload básico PSR-4
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
     $baseDir = APP_PATH . '/';
@@ -29,13 +28,13 @@ spl_autoload_register(function ($class) {
 
 use App\Core\App;
 
-// 1. Iniciar la aplicación
+// 1. Instanciar App
 $app = new App();
 
-// 2. Extraer el Router para que esté disponible en el scope del require
+// 2. Extraer la propiedad $router para pasársela a routes/web.php
 $router = $app->router;
 
-// 3. Cargar el archivo de rutas (ahora $router sí existirá dentro de web.php)
+// 3. Cargar las rutas
 require_once ROOT_PATH . '/routes/web.php';
 
 // 4. Ejecutar la aplicación

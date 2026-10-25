@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle ?? 'HiDalMei') ?></title>
-    <!-- Bootstrap 5 CSS -->
+    <!-- CSS de Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/style.css">
+    <!-- JS de Bootstrap 5 (con Popper) para activar Modales, Alertas y Dropdowns -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
@@ -19,7 +20,7 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="<?= APP_URL ?>/">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= APP_URL ?>/catalog">Catálogo</a></li>
-                    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'ADMIN'): ?>
+                    <?php if (isset($_SESSION['user_role']) && ($_SESSION['user_role'] === 'ADMIN' || $_SESSION['user_role'] === 'ADMINISTRADOR')): ?>
                         <li class="nav-item"><a class="nav-link text-warning fw-bold" href="<?= APP_URL ?>/admin/dashboard">Panel Admin</a></li>
                     <?php endif; ?>
                 </ul>
@@ -27,8 +28,8 @@
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <li class="nav-item me-3">
                             <span class="navbar-text text-white">
-                                👋 Hola, <strong><?= htmlspecialchars($_SESSION['user_name']) ?></strong> 
-                                <span class="badge bg-secondary ms-1"><?= htmlspecialchars($_SESSION['user_role']) ?></span>
+                                👤 <strong><?= htmlspecialchars($_SESSION['user_name']) ?></strong> 
+                                <span class="badge bg-danger ms-1"><?= htmlspecialchars($_SESSION['user_role']) ?></span>
                             </span>
                         </li>
                         <li class="nav-item">
@@ -47,7 +48,6 @@
     </nav>
 
     <main class="container py-4 flex-grow-1">
-        <!-- Mensajes Flash -->
         <?php if (isset($_SESSION['flash_success'])): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <?= htmlspecialchars($_SESSION['flash_success']) ?>

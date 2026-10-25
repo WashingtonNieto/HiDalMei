@@ -1,7 +1,6 @@
 <?php
 /**
  * app/Core/Request.php
- * Encapsula la petición HTTP y normaliza la ruta removiendo la carpeta base
  */
 
 declare(strict_types=1);
@@ -14,20 +13,15 @@ class Request
     {
         $path = $_SERVER['REQUEST_URI'] ?? '/';
         
-        // Limpiar query params (?foo=bar)
         $position = strpos($path, '?');
         if ($position !== false) {
             $path = substr($path, 0, $position);
         }
 
-        // Obtener el script actual (ej: /hidalmei/public/index.php)
         $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
-        $baseDir = dirname($scriptName); // Ej: /hidalmei/public
-
-        // Remover /public del baseDir para considerar la raíz del proyecto
+        $baseDir = dirname($scriptName);
         $projectDir = preg_replace('#/public$#i', '', $baseDir);
 
-        // Si la URI empieza con el directorio del proyecto o de public, removerlo
         if (!empty($projectDir) && $projectDir !== '/' && preg_match('#^' . preg_quote($projectDir, '#') . '#i', $path)) {
             $path = substr($path, strlen($projectDir));
         }

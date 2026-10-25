@@ -1,10 +1,9 @@
 </main>
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
-        <div class="container">
-            <small>&copy; <?= date('Y') ?> HiDalMei - Moda, Belleza y Productos Orientales. Todos los derechos reservados.</small>
+
+    <footer class="bg-dark text-light py-4 mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">&copy; <?= date('Y') ?> HiDalMei - Productos de Corea del Sur, Japón y China. Todos los derechos reservados.</p>
         </div>
     </footer>
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/bootstrap.bundle.min.js"></script>
 </body>
 </html>

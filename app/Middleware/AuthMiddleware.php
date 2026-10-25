@@ -1,7 +1,7 @@
 <?php
 /**
  * app/Middleware/AuthMiddleware.php
- * Guard de autenticación para rutas privadas
+ * Guard de autenticación para validar sesiones activas
  */
 
 declare(strict_types=1);
@@ -19,7 +19,7 @@ class AuthMiddleware
         }
 
         if (!isset($_SESSION['user_id'])) {
-            $_SESSION['flash_error'] = 'Debe iniciar sesión para acceder a este recurso.';
+            $_SESSION['flash_error'] = 'Debe iniciar sesión para acceder a esta área.';
             $response = new Response();
             $response->redirect('/login');
             return false;

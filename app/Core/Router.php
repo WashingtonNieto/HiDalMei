@@ -1,7 +1,7 @@
 <?php
 /**
  * app/Core/Router.php
- * Mapeador de rutas con soporte para parámetros dinámicos
+ * Mapeador de rutas dinámicas
  */
 
 declare(strict_types=1);
@@ -39,11 +39,9 @@ class Router
     {
         $path = $this->request->getPath();
         $method = $this->request->getMethod();
-        
         $routes = $this->routes[$method] ?? [];
 
         foreach ($routes as $routePath => $callback) {
-            // Convertir rutas con sintaxis tipo {id} o {slug} en expresiones regulares
             $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<\1>[a-zA-Z0-9_\-]+)', $routePath);
             $pattern = "#^" . $pattern . "$#";
 
@@ -68,7 +66,6 @@ class Router
             }
         }
 
-        // Ruta no encontrada
         $this->response->setStatusCode(404);
         return $this->renderError(404);
     }
